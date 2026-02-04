@@ -15,7 +15,7 @@ public class View {
     }
 
     private JFrame frame;
-    public void createFrame() {
+    private void createFrame() {
         frame = new JFrame();
 
         addComponents();
@@ -26,11 +26,11 @@ public class View {
         frame.setVisible(true);
     }
 
-    public void addComponents() {
+    private void addComponents() {
         
     }
 
-    public void registerControllers() {
+    private void registerControllers() {
         
     }
 
