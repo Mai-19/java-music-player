@@ -1,7 +1,13 @@
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+
+import javax.swing.JLabel;
+import javax.swing.Timer;
 
 public class ScrollingLabel extends JLabel implements ActionListener {
     private String fullText;
@@ -38,7 +44,7 @@ public class ScrollingLabel extends JLabel implements ActionListener {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(getForeground());
         g2.setFont(getFont());
-        FontMetrics fm = g2.getFontMetrics(); 
+        FontMetrics fm = g2.getFontMetrics();
         textWidth = fm.stringWidth(fullText);
         bareWidth = fm.stringWidth(displayString);
         int y = (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
