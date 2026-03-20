@@ -21,7 +21,7 @@ public class PlayerPanel extends JPanel {
 
     private TopBarPanel topBar;
 
-    private MusicPanel musicList;
+    private MusicPanel musicPanel;
 
     private BottomBarPanel bottomBar;
     private void createLayout() {
@@ -30,8 +30,8 @@ public class PlayerPanel extends JPanel {
 
         topBar = new TopBarPanel(view);
 
-        musicList = new MusicPanel(model);
-        RoundedPanel rounded = new RoundedPanel(musicList, 60);
+        musicPanel = new MusicPanel(model, view);
+        RoundedPanel rounded = new RoundedPanel(musicPanel, 60);
 
         bottomBar = new BottomBarPanel(model);
 
@@ -43,8 +43,8 @@ public class PlayerPanel extends JPanel {
     public TopBarPanel getTopBar() {
         return topBar;
     }
-    public MusicPanel getMusicList() {
-        return musicList;
+    public MusicPanel getMusicPanel() {
+        return musicPanel;
     }
     public BottomBarPanel getBottomBar() {
         return bottomBar;

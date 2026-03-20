@@ -79,7 +79,7 @@ public class BottomBarPanel extends JPanel {
         shuffleBtn = new MusicPlayerToggleButton(Icons.SHUFFLE);
         prevBtn = new MusicPlayerButton(Icons.PREVIOUS);
         rewindBtn = new MusicPlayerButton(Icons.REVERSE);
-        playPauseBtn = new MusicPlayerButton(Icons.PLAY_PAUSE);
+        playPauseBtn = new MusicPlayerButton(Icons.PLAY);
         forwardBtn = new MusicPlayerButton(Icons.FORWARD);
         nextBtn = new MusicPlayerButton(Icons.NEXT);
         repeatBtn = new MusicPlayerToggleButton(Icons.REPEAT);
@@ -144,20 +144,20 @@ public class BottomBarPanel extends JPanel {
         volumeBtn.addActionListener(actionListener);
     }
 
-    public void setPlaybackButtonIcon(String string) {
-        if (string.equals("play")) playPauseBtn.setIcon(Icons.PLAY);
-        else if (string.equals("pause")) playPauseBtn.setIcon(Icons.PAUSE);
+    public void togglePlayback() {
+        if (playPauseBtn.getIcon().equals(Icons.PLAY)) playPauseBtn.setIcon(Icons.PAUSE);
+        else playPauseBtn.setIcon(Icons.PLAY);
     }
 
     public int getProgress() { return progressBar.getValue(); }
 
     public void setSongTitle(String title) { songTitleLabel.setScrollingText(title); }
-    public void setAlbumArtist(String text) { albumArtistLabel.setScrollingText(text); }
+    public void setAlbum(String text) { albumArtistLabel.setScrollingText(text); }
     public void setCurrentTime(String time) { currentTimeLabel.setText(time); }
     public void setAlbumArt(ImageIcon icon) { albumArtLabel.setIcon(icon); }
-    public void setTotalTime(String time) { 
+    public void setTotalTime(String time, int seconds) { 
         totalTimeLabel.setText(time);
-        progressBar.setMaximum((Integer.parseInt(time.split(":")[0])*60) + (Integer.parseInt(time.split(":")[1])));
+        progressBar.setMaximum(seconds);
     }
 
     public void setProgress(int value) { progressBar.setValue(value); }
@@ -183,5 +183,10 @@ public class BottomBarPanel extends JPanel {
             model.setVolume(unMuteVolume);
             muteFlag = true;
         }
+    }
+
+    public void setPlayback(String string) {
+        if (string.equals("play")) playPauseBtn.setIcon(Icons.PLAY);
+        else if (string.equals("pause")) playPauseBtn.setIcon(Icons.PAUSE);
     }
 }

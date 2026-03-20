@@ -2,16 +2,16 @@ package listeners;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import model.Model;
+import view.View;
 
 public class ResizeListener extends ComponentAdapter{
-    private Model model;
-    public ResizeListener(Model model) {
+    private View view;
+    public ResizeListener(View view) {
         super();
-        this.model = model;
+        this.view = view;
     }
     @Override
     public void componentResized(ComponentEvent e) {
-        model.update();
+        view.update();
     }
 }

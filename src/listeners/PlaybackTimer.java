@@ -27,6 +27,7 @@ public class PlaybackTimer implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (model.hasMetadataChanged()) view.pullMetadata();
         if (!model.isAdjustingTime()) {
             int progress = model.getProgress();
             if (progress != -1) view.setProgress(progress);

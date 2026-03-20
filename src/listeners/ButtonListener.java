@@ -21,17 +21,19 @@ public class ButtonListener implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand().split(":", 2)[0]) {
             case "settings":
-                model.changeView(Cards.SETTINGS);
+                view.changeView(Cards.SETTINGS);
                 break;
             case "back":
-                model.changeView(Cards.PLAYER);
+                view.changeView(Cards.PLAYER);
                 break;
             case "refresh":
                 model.indexSongs();
+                view.pullSongs();
                 break;
 
             case "toggle playback":
                 model.togglePlayback();
+                view.togglePlayback();
                 break;
             case "forward":
                 model.forwardSong();
@@ -40,7 +42,7 @@ public class ButtonListener implements ActionListener{
                 model.rewindSong();
                 break;
             case "toggle mute":
-                model.toggleMute();
+                view.toggleMute();
                 break;
             case "add directory":
                 view.addDirectory();

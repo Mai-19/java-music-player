@@ -9,24 +9,24 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import listeners.TableMouseListener;
+
 import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Point;
 import java.util.Collection;
 
 import model.Model;
 import model.Song;
+import view.View;
 
 public class MusicPanel extends JPanel {
 
     private DefaultTableModel tableModel;
     private JTable table;
     private TableRowSorter<DefaultTableModel> sorter;
-    private Model model;
-    public MusicPanel(Model model) {
+    public MusicPanel(Model model, View view) {
         super(new BorderLayout());
         setOpaque(false);
-        this.model = model;
 
         String[] columns = {"Title", "Artist", "Album", "Year", "Length"};
         Object[][] data = {};
@@ -37,17 +37,7 @@ public class MusicPanel extends JPanel {
 
         table = new JTable(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int row = table.rowAtPoint(e.getPoint());
-                    if (row != -1) {
-                        model.play(table.convertRowIndexToModel(row));
-                    }
-                }
-            }
-        });
+        table.addMouseListener(new TableMouseListener(view, model));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
@@ -73,6 +63,14 @@ public class MusicPanel extends JPanel {
         for (Song song : songs) { 
             tableModel.addRow(song.getInfo()); 
         } 
+    }
+
+    public int rowAtPoint(Point point) {
+        return table.rowAtPoint(point);
+    }
+
+    public int convertRowIndexToModel(int row) {
+        return table.convertRowIndexToModel(row);
     }
 
     public JTable getTable() { return table; }

@@ -23,7 +23,7 @@ public class PlaybackSliderListener implements ChangeListener {
         if (slider.getValueIsAdjusting()) {
             model.pausePlayback();
             model.setUserAdjustingTime(true);
-            model.setPlaybackTime(slider.getValue()*1000);
+            model.setPlaybackTime(slider.getValue());
         }
         else {
             model.setUserAdjustingTime(false);

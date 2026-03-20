@@ -15,7 +15,6 @@ public class Icons {
     public static final ImageIcon MUTED_VOLUME = load("icons/muted-volume.png", 25, 25);
     public static final ImageIcon NEXT = load("icons/next.png", 25, 25);
     public static final ImageIcon PAUSE = load("icons/pause.png", 25, 25);
-    public static final ImageIcon PLAY_PAUSE = load("icons/play-pause.png", 32, 32);
     public static final ImageIcon PLAY = load("icons/play.png", 25, 25);
     public static final ImageIcon PREVIOUS = load("icons/previous.png", 25, 25);
     public static final ImageIcon REFRESH = load("icons/refresh.png", 25, 25);

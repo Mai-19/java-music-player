@@ -1,5 +1,4 @@
 package model;
-import java.awt.Image;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,9 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import javax.swing.ImageIcon;
-import javax.swing.RowFilter;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -22,30 +18,40 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
-import view.Cards;
-import view.View;
 
 public class Model {
-    private View view;
-
+    // valid extensions
     private String[] musicFileExtensions;
 
+    // lists of songs and directories and the home path
     private HashSet<String> directories;
     private ArrayList<Song> songs;
     private Path directoryObjectPath;
 
+    // audio playback related
     private AudioContext audioContext;
     private SamplePlayer samplePlayer;
     private Gain volumeControlGain;
 
-    private AudioHeader currentSongHeader;
+    // metadata related
+    private String title, artist, album, year, length, path;
+    private int seconds;
+    private byte[] artworkBytes;
 
+    // safety lock for user adjusting time
     private boolean userAdjustingTime;
+    private boolean metadataChanged;
+
+    /**
+     * TODO: setup a queue, shuffle, and repeat
+     * TODO: pull songs from DB on launch
+     */
 
     public Model() {
         super();
 
         userAdjustingTime = false;
+        metadataChanged = false;
 
         audioContext = AudioContext.getDefaultContext();
         volumeControlGain = new Gain(audioContext, 2, 0.5f);
@@ -64,23 +70,13 @@ public class Model {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public void addGUI(View view) {
-        this.view = view;
         loadDirectories();
-        // TODO: load the songs from the database into the songs arraylist
+        indexSongs();
     }
 
-    public void update() {
-        view.update();
-    }
-
-    public void changeView(Cards settings){
-        view.changeView(settings);
-    }
-
-    public void saveDirectories() {
+    // TODO: replace with database
+    public void saveDirectories() { 
         try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(directoryObjectPath))){
             out.writeObject(directories);
         } catch (IOException e) {
@@ -88,6 +84,7 @@ public class Model {
         }
     }
 
+    // TODO: replace with database
     @SuppressWarnings("unchecked")
     public void loadDirectories() {
         try {
@@ -101,10 +98,10 @@ public class Model {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        view.addDirectories(directories);
     }
 
     public void indexSongs() {
+        if (songs != null) songs.clear();
         for (String dir : directories) {
             try {
                 Files.walk(Path.of(dir))
@@ -120,9 +117,9 @@ public class Model {
                 e.printStackTrace();
             }
         }
-        view.updateSongs(songs);
     }
 
+    // TODO: add song to database as well.
     public void addSong(Path p) {
         try {
             AudioFile f = AudioFileIO.read(p.toFile());
@@ -135,16 +132,18 @@ public class Model {
             int seconds = header.getTrackLength();
             String length = String.format("%d:%02d", seconds / 60, seconds % 60);
 
-            songs.add(new Song(title, artist, album, year, length, p.toString()));
+            songs.add(new Song(title, artist, album, year, seconds, length, p.toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // TODO: add directory to database
     public void addDirectory(String absolutePath) {
         directories.add(absolutePath);
     }
 
+    // TODO: remove directory from database
     public void removeDirectory(String path) {
         directories.remove(path);
     }
@@ -153,44 +152,49 @@ public class Model {
         if (samplePlayer != null) {
             samplePlayer.kill();
         }
+        this.getMetadata(row);
         samplePlayer = new SamplePlayer(audioContext, SampleManager.sample(songs.get(row).getPath()));
         volumeControlGain.addInput(samplePlayer);
         audioContext.out.addInput(volumeControlGain);
+
+    }
+
+    private void getMetadata(int row) {
+        metadataChanged = true;
         try {
             AudioFile f = AudioFileIO.read(Path.of(songs.get(row).getPath()).toFile());
-            currentSongHeader = f.getAudioHeader();
             Tag tag = f.getTag();
+            title  = tag.getFirst(FieldKey.TITLE);
+            artist = tag.getFirst(FieldKey.ARTIST);
+            album  = tag.getFirst(FieldKey.ALBUM);
+            year   = tag.getFirst(FieldKey.YEAR);
+            
+            AudioHeader header = f.getAudioHeader();
+            seconds = header.getTrackLength();
+            length = String.format("%d:%02d", seconds / 60, seconds % 60);
+
             Artwork artwork = tag.getFirstArtwork();
-            if (artwork != null) {
-                byte[] imageData = artwork.getBinaryData();
-                ImageIcon icon = new ImageIcon(imageData);
-                view.updatePlayingSong(songs.get(row), new ImageIcon(icon.getImage().getScaledInstance(68, 68, Image.SCALE_FAST)));
-            } else {
-                ImageIcon albumArtLabel = new ImageIcon(new ImageIcon(getClass().getResource("placeholder.png")).getImage().getScaledInstance(68, 68, Image.SCALE_SMOOTH));
-                view.updatePlayingSong(songs.get(row), albumArtLabel);  
-            }
+            if (artwork != null) artworkBytes = artwork.getBinaryData(); 
+            else artworkBytes = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        view.setPlaybackButtonIcon("pause");
     }
 
     public void setPlaybackTime(int time) {
         if (samplePlayer == null) return;
-        samplePlayer.setPosition(time);
+        samplePlayer.setPosition(time*1000);
     }
 
     public void forwardSong() {
         if (samplePlayer == null) return;
-        if (samplePlayer.getPosition() >= (currentSongHeader.getTrackLength()*1000)-5000) nextSong();
+        if (samplePlayer.getPosition() >= (seconds*1000)-5000) nextSong();
         else samplePlayer.setPosition(samplePlayer.getPosition()+5000);
-        view.shiftProgress(5);
     }
     public void rewindSong() {
         if (samplePlayer == null) return;
         if (samplePlayer.getPosition() <= 5000) samplePlayer.setPosition(0);
         else samplePlayer.setPosition(samplePlayer.getPosition()-5000);
-        view.shiftProgress(-5);
     }
 
     public void nextSong() {
@@ -204,26 +208,17 @@ public class Model {
 
     public void togglePlayback() {
         if (samplePlayer == null) return;
-        if (samplePlayer.isPaused()) {
-            samplePlayer.pause(false);
-           view.setPlaybackButtonIcon("pause");
-        }
-        else {
-            samplePlayer.pause(true);
-            view.setPlaybackButtonIcon("play");
-        }
+        samplePlayer.pause(!samplePlayer.isPaused());
     }
 
     public void pausePlayback() {
         if (samplePlayer == null) return;
         samplePlayer.pause(true);
-        view.setPlaybackButtonIcon("play");
     }
     
     public void resumePlayback() {
         if (samplePlayer == null) return;
         samplePlayer.pause(false);
-        view.setPlaybackButtonIcon("pause");
 
     }
 
@@ -237,25 +232,60 @@ public class Model {
         float linear = value/10f;
         float log = (float) (Math.pow(linear, 2.0));
         volumeControlGain.setGain(log);
-        view.setVolume(value);
-    }
-
-    public void setRowFilter(RowFilter<Object,Object> regexFilter) {
-        view.setRowFilter(regexFilter);
-    }
-
-    public void toggleMute() {
-        view.toggleMute();
     }
 
     public int getProgress() {
         if (samplePlayer != null && !samplePlayer.isPaused()) {
             return (int) (samplePlayer.getPosition() / 1000);
         }
-        return -1; // -1 means dont update
+        return -1; // -1 means don't update
+    }
+
+    public boolean hasMetadataChanged() {
+        if (metadataChanged) {
+            metadataChanged = false; // reset after read
+            return true;
+        }
+        return false;
     }
 
     public boolean isAdjustingTime() {
         return userAdjustingTime;
+    }
+
+    public HashSet<String> getDirectories() {
+        return directories;
+    }
+
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public int getSeconds() {
+        return seconds;
+    }
+
+    public byte[] getArtworkBytes() {
+        return artworkBytes;
     }
 }
