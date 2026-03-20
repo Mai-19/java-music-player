@@ -151,6 +151,9 @@ public class View {
     public void toggleMute() {
         playerPanel.getBottomBar().toggleMute();
     }
+    public void setVolume(float val) {
+        playerPanel.getBottomBar().setVolume(val);
+    }
     public void togglePlayback() {
         playerPanel.getBottomBar().togglePlayback();
     }

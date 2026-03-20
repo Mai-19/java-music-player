@@ -4,6 +4,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.Model;
+import view.View;
 import view.components.MusicPlayerSlider;
 
 /**
@@ -13,14 +14,16 @@ import view.components.MusicPlayerSlider;
 public class PlaybackSliderListener implements ChangeListener {
 
     private Model model;
+    private View view;
 
     /**
      * Constructor for the PlaybackSliderListener class
      * @param model
      */
-    public PlaybackSliderListener(Model model) {
+    public PlaybackSliderListener(Model model, View view) {
         super();
 
+        this.view = view;
         this.model = model;
     }
 
@@ -39,6 +42,8 @@ public class PlaybackSliderListener implements ChangeListener {
             // continue playback and unset flag
             model.setUserAdjustingTime(false);
             model.resumePlayback();
+            view.setPlayback("pause");
+            
         }
     }
     

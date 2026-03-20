@@ -10,6 +10,7 @@ import controller.PlaybackSliderListener;
 import controller.VolumeSliderListener;
 import model.Model;
 import view.Icons;
+import view.View;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -24,6 +25,7 @@ import java.awt.event.ActionListener;
 public class BottomBarPanel extends JPanel {
 
     private Model model;
+    private View view;
 
     private JLabel albumArtLabel;
     // custom label, scrolls if text is too long
@@ -48,9 +50,10 @@ public class BottomBarPanel extends JPanel {
      * constructor for the BottomBarPanel class
      * @param model
      */
-    public BottomBarPanel(Model model) {
+    public BottomBarPanel(Model model, View view) {
         super();
         this.model = model;
+        this.view = view;
         setLayout(new BorderLayout(10, 0));
         // padding border
         setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
@@ -128,7 +131,7 @@ public class BottomBarPanel extends JPanel {
         progressBar = new MusicPlayerSlider(0, 100, 0);
         progressBar.setFocusable(false);
 
-        progressBar.addChangeListener(new PlaybackSliderListener(model));
+        progressBar.addChangeListener(new PlaybackSliderListener(model, view));
 
         progressRow.add(currentTimeLabel, BorderLayout.WEST);
         progressRow.add(progressBar, BorderLayout.CENTER);
@@ -154,7 +157,7 @@ public class BottomBarPanel extends JPanel {
         volumeSlider.setPreferredSize(new Dimension(90, 20));
         volumeSlider.setFocusable(false);
 
-        volumeSlider.addChangeListener(new VolumeSliderListener(model));
+        volumeSlider.addChangeListener(new VolumeSliderListener(model, view));
 
         volumeBtn.setActionCommand("toggle mute");
         
