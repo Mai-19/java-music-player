@@ -1,6 +1,9 @@
 package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JFileChooser;
 
 import model.Model;
 import view.Cards;
@@ -100,6 +103,18 @@ public class ButtonListener implements ActionListener{
                 view.pullSongs();
                 break;
             
+            case "download stats":
+                JFileChooser chooser = new JFileChooser();
+                chooser.setSelectedFile(new File("weekly-stats.png"));
+                int result = chooser.showSaveDialog(view.getFrame());
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        model.exportTopSongsImage(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                break;
             // unused
             default: break;
         }

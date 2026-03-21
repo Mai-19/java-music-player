@@ -24,6 +24,14 @@ public class MusicPlayerButton extends JButton {
         setFocusPainted(false);
         setOpaque(false);
     }
+    public MusicPlayerButton(String text) {
+        super(text);
+        setContentAreaFilled(false);
+        setRolloverEnabled(true);
+        setBorderPainted(false);
+        setFocusPainted(false);
+        setOpaque(false);
+    }
 
     /**
      * paints the button

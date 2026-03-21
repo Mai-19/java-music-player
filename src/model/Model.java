@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -18,6 +19,16 @@ import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
+
+import javax.imageio.ImageIO;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class Model {
     // valid extensions
@@ -70,6 +81,7 @@ public class Model {
 
         db = new DatabaseManager();
         db.init();
+        db.resetStatsIfNewWeek();
 
         // load saved data from database only
         loadDirectories();
@@ -122,7 +134,7 @@ public class Model {
             AudioHeader header = f.getAudioHeader();
 
             if (header.getBitsPerSample() > 16) {
-                System.err.println("Skipping Unsupported 24-bit file: "+p);
+                System.err.println("Skipping Unsupported 24-bit file: " + p);
                 return;
             }
 
@@ -392,5 +404,77 @@ public class Model {
 
     public int getIndex() {
         return index;
+    }
+
+    public void exportTopSongsImage(String outputPath) throws Exception {
+        List<String[]> topSongs = db.getTopSongs(5);
+
+        int width = 1200;
+        int height = 840;
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // background
+        g.setColor(new Color(30, 30, 30));
+        g.fillRect(0, 0, width, height);
+
+        // header
+        g.setColor(new Color(180, 120, 255));
+        g.setFont(new Font("SansSerif", Font.BOLD, 56));
+        g.drawString("Weekly Stats", 80, 110);
+
+        // subtitle
+        g.setColor(new Color(150, 150, 150));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 28));
+        g.drawString("Your top 5 most played songs", 80, 160);
+
+        // divider
+        g.setColor(new Color(70, 70, 70));
+        g.fillRect(80, 190, width - 160, 4);
+
+        // songs
+        int y = 280;
+        for (int i = 0; i < topSongs.size(); i++) {
+            String[] song = topSongs.get(i);
+            String title = song[0].isEmpty() ? "Unknown Title" : song[0];
+            String artist = song[1].isEmpty() ? "Unknown Artist" : song[1];
+            String plays = song[2] + (song[2].equals("1") ? " play" : " plays");
+
+            // rank number
+            g.setColor(new Color(180, 120, 255));
+            g.setFont(new Font("SansSerif", Font.BOLD, 40));
+            g.drawString("#" + (i + 1), 80, y);
+
+            // title
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("SansSerif", Font.BOLD, 32));
+            g.drawString(truncate(title, 45), 160, y);
+
+            // artist + play count
+            g.setColor(new Color(150, 150, 150));
+            g.setFont(new Font("SansSerif", Font.PLAIN, 26));
+            g.drawString(truncate(artist, 45) + "  •  " + plays, 160, y + 40);
+
+            y += 120;
+        }
+
+        // footer
+        g.setColor(new Color(100, 100, 100));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 22));
+        FontMetrics fm = g.getFontMetrics();
+        int textWidth = fm.stringWidth("MusicPlayer");
+        g.drawString("MusicPlayer", (width - textWidth) / 2, height - 20);
+
+        g.dispose();
+
+        ImageIO.write(image, "png", new File(outputPath));
+        System.out.println("Saved to " + outputPath);
+    }
+
+    private String truncate(String text, int maxChars) {
+        return text.length() > maxChars ? text.substring(0, maxChars - 1) + "…" : text;
     }
 }

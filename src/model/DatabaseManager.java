@@ -4,13 +4,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
 
-    private static final String DB_FOLDER =
-            System.getProperty("user.home") + "/COMP2800-MusicProjectData";
+    private static final String DB_FOLDER = System.getProperty("user.home") + "/COMP2800-MusicProjectData";
     private static final String DB_FILE = DB_FOLDER + "/MusicPlayerDB.sqlite";
     private static final String URL = "jdbc:sqlite:" + DB_FILE;
 
@@ -53,13 +53,11 @@ public class DatabaseManager {
     }
 
     private void createTables() throws SQLException {
-        String createDirectories =
-                "CREATE TABLE IF NOT EXISTS DIRECTORIES (" +
+        String createDirectories = "CREATE TABLE IF NOT EXISTS DIRECTORIES (" +
                 "    path TEXT PRIMARY KEY" +
                 ")";
 
-        String createSongs =
-                "CREATE TABLE IF NOT EXISTS SONGS (" +
+        String createSongs = "CREATE TABLE IF NOT EXISTS SONGS (" +
                 "    song_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "    title TEXT, " +
                 "    artist TEXT, " +
@@ -73,18 +71,21 @@ public class DatabaseManager {
                 "    FOREIGN KEY (directory_path) REFERENCES DIRECTORIES(path) ON DELETE CASCADE" +
                 ")";
 
-        String createStats =
-                "CREATE TABLE IF NOT EXISTS STATS (" +
+        String createStats = "CREATE TABLE IF NOT EXISTS STATS (" +
                 "    song_id INTEGER PRIMARY KEY, " +
                 "    play_count INTEGER NOT NULL DEFAULT 0, " +
                 "    last_played TEXT, " +
                 "    FOREIGN KEY (song_id) REFERENCES SONGS(song_id) ON DELETE CASCADE" +
                 ")";
-
+        String createMeta = "CREATE TABLE IF NOT EXISTS META (" +
+                "    key TEXT PRIMARY KEY, " +
+                "    value TEXT" +
+                ")";
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(createDirectories);
             stmt.executeUpdate(createSongs);
             stmt.executeUpdate(createStats);
+            stmt.executeUpdate(createMeta);
         }
     }
 
@@ -115,7 +116,7 @@ public class DatabaseManager {
         String sql = "SELECT path FROM DIRECTORIES ORDER BY path";
 
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 dirs.add(rs.getString("path"));
@@ -130,8 +131,7 @@ public class DatabaseManager {
     // ─── SONGS ─────────────────────────────────────────────────────
 
     public void addOrUpdateSong(Song song, String directoryPath) {
-        String sql =
-                "INSERT INTO SONGS " +
+        String sql = "INSERT INTO SONGS " +
                 "(title, artist, album, release_year, seconds, length, path, directory_path, last_modified) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                 "ON CONFLICT(path) DO UPDATE SET " +
@@ -151,10 +151,10 @@ public class DatabaseManager {
             stmt.setString(2, safeString(info[1])); // artist
             stmt.setString(3, safeString(info[2])); // album
             stmt.setString(4, safeString(info[3])); // year
-            stmt.setInt(5, song.getSeconds());      // seconds
+            stmt.setInt(5, song.getSeconds()); // seconds
             stmt.setString(6, safeString(info[4])); // length
-            stmt.setString(7, song.getPath());      // path
-            stmt.setString(8, directoryPath);       // saved directory
+            stmt.setString(7, song.getPath()); // path
+            stmt.setString(8, directoryPath); // saved directory
             stmt.setLong(9, getFileLastModified(song.getPath()));
 
             stmt.executeUpdate();
@@ -174,7 +174,7 @@ public class DatabaseManager {
         String sql = "SELECT title, artist, album, release_year, seconds, length, path FROM SONGS ORDER BY title COLLATE NOCASE";
 
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 songs.add(new Song(
@@ -184,8 +184,7 @@ public class DatabaseManager {
                         rs.getString("release_year"),
                         rs.getInt("seconds"),
                         rs.getString("length"),
-                        rs.getString("path")
-                ));
+                        rs.getString("path")));
             }
         } catch (SQLException e) {
             System.out.println("Error loading songs: " + e.getMessage());
@@ -196,8 +195,7 @@ public class DatabaseManager {
 
     public List<Song> loadSongsForDirectory(String directoryPath) {
         List<Song> songs = new ArrayList<>();
-        String sql =
-                "SELECT title, artist, album, release_year, seconds, length, path " +
+        String sql = "SELECT title, artist, album, release_year, seconds, length, path " +
                 "FROM SONGS WHERE directory_path = ? ORDER BY title COLLATE NOCASE";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -212,8 +210,7 @@ public class DatabaseManager {
                             rs.getString("release_year"),
                             rs.getInt("seconds"),
                             rs.getString("length"),
-                            rs.getString("path")
-                    ));
+                            rs.getString("path")));
                 }
             }
         } catch (SQLException e) {
@@ -260,10 +257,10 @@ public class DatabaseManager {
 
     public void recordPlay(String path) {
         int songId = getSongId(path);
-        if (songId == -1) return;
+        if (songId == -1)
+            return;
 
-        String sql =
-                "INSERT INTO STATS (song_id, play_count, last_played) " +
+        String sql = "INSERT INTO STATS (song_id, play_count, last_played) " +
                 "VALUES (?, 1, datetime('now')) " +
                 "ON CONFLICT(song_id) DO UPDATE SET " +
                 "play_count = play_count + 1, " +
@@ -279,7 +276,8 @@ public class DatabaseManager {
 
     public int getPlayCount(String path) {
         int songId = getSongId(path);
-        if (songId == -1) return 0;
+        if (songId == -1)
+            return 0;
 
         String sql = "SELECT play_count FROM STATS WHERE song_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -300,8 +298,7 @@ public class DatabaseManager {
     public List<String[]> getTopSongs(int limit) {
         List<String[]> results = new ArrayList<>();
 
-        String sql =
-                "SELECT s.title, s.artist, st.play_count " +
+        String sql = "SELECT s.title, s.artist, st.play_count " +
                 "FROM SONGS s " +
                 "JOIN STATS st ON s.song_id = st.song_id " +
                 "ORDER BY st.play_count DESC, s.title ASC " +
@@ -368,5 +365,50 @@ public class DatabaseManager {
 
     private String safeString(Object value) {
         return value == null ? "" : value.toString();
+    }
+
+    public void resetStatsIfNewWeek() {
+        String lastReset = getMeta("last_reset");
+        LocalDate now = LocalDate.now();
+
+        if (lastReset == null || LocalDate.parse(lastReset).plusWeeks(1).isBefore(now)) {
+            resetStats();
+            setMeta("last_reset", now.toString());
+            System.out.println("Weekly stats reset.");
+        }
+    }
+
+    public void resetStats() {
+        String sql = "UPDATE STATS SET play_count = 0, last_played = NULL";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("Error resetting stats: " + e.getMessage());
+        }
+    }
+
+    private void setMeta(String key, String value) {
+        String sql = "INSERT INTO META (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, key);
+            stmt.setString(2, value);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error setting meta: " + e.getMessage());
+        }
+    }
+
+    private String getMeta(String key) {
+        String sql = "SELECT value FROM META WHERE key = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, key);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next())
+                    return rs.getString("value");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting meta: " + e.getMessage());
+        }
+        return null;
     }
 }

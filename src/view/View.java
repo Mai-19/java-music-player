@@ -107,6 +107,7 @@ public class View {
         settingsPanel.getBackBtn().addActionListener(buttonListener);
         settingsPanel.getRefreshBtn().addActionListener(buttonListener);
         settingsPanel.getAddDirectoryBtn().addActionListener(buttonListener);
+        settingsPanel.getDownloadStatsBtn().addActionListener(buttonListener);
     }
 
     /**
@@ -205,5 +206,9 @@ public class View {
     // static
     static {
         ALBUM_IMG_SIZE = 80;
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 }

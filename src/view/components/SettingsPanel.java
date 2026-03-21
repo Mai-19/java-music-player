@@ -16,6 +16,7 @@ import view.View;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -77,7 +78,7 @@ public class SettingsPanel extends JPanel {
     /**
      * Builds the list of directories
      */
-    private MusicPlayerButton addBtn;
+    private MusicPlayerButton addBtn, downloadStatsBtn;
     private JPanel buildDirectoriesTable() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
@@ -113,6 +114,16 @@ public class SettingsPanel extends JPanel {
 
         panel.add(header, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
+
+        downloadStatsBtn = new MusicPlayerButton("Download Stats");
+        downloadStatsBtn.setActionCommand("download stats");
+        downloadStatsBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
+        bottomPanel.add(downloadStatsBtn);
+
+        panel.add(bottomPanel, BorderLayout.SOUTH);
         return panel;
     }
 
@@ -171,4 +182,5 @@ public class SettingsPanel extends JPanel {
     public JButton getBackBtn() { return backBtn; }
     public MusicPlayerButton getRefreshBtn() { return refreshBtn; }
     public MusicPlayerButton getAddDirectoryBtn() { return addBtn; }
+    public JButton getDownloadStatsBtn() { return downloadStatsBtn; }
 }
