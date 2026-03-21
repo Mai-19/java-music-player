@@ -67,6 +67,22 @@ public class ButtonListener implements ActionListener{
                 view.setProgress(view.getProgress()-5);
                 view.setPlayback("pause");
                 break;
+            case "next":
+                model.nextSong();
+                break;
+            case "previous":
+                model.previousSong();
+                break;
+            // shuffle song queue
+            case "shuffle":
+                model.shuffleSongs();
+                view.pullSongs();
+                break;
+            // repeat single song
+            case "repeat":
+                model.repeatSong();
+                view.pullSongs();
+                break;
             // mute the player
             case "toggle mute":
                 view.toggleMute();
@@ -74,11 +90,14 @@ public class ButtonListener implements ActionListener{
             // add directory to the list of directories to index
             case "add directory":
                 view.addDirectory();
+                model.indexSongs();
+                view.pullSongs();
                 break;
             // remove directory from the list of directories to index
             case "remove directory":
                 model.removeDirectory(e.getActionCommand().split(":", 2)[1]);
                 view.refreshDirectoryList();
+                view.pullSongs();
                 break;
             
             // unused

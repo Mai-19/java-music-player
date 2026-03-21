@@ -111,10 +111,6 @@ public class BottomBarPanel extends JPanel {
         nextBtn = new MusicPlayerButton(Icons.NEXT);
         repeatBtn = new MusicPlayerToggleButton(Icons.REPEAT);
 
-        rewindBtn.setActionCommand("rewind");
-        playPauseBtn.setActionCommand("toggle playback");
-        forwardBtn.setActionCommand("forward");
-
         buttonsRow.add(shuffleBtn);
         buttonsRow.add(prevBtn);
         buttonsRow.add(rewindBtn);
@@ -158,8 +154,6 @@ public class BottomBarPanel extends JPanel {
         volumeSlider.setFocusable(false);
 
         volumeSlider.addChangeListener(new VolumeSliderListener(model, view));
-
-        volumeBtn.setActionCommand("toggle mute");
         
         muteFlag = true;
 
@@ -170,10 +164,23 @@ public class BottomBarPanel extends JPanel {
 
     // adds action listeners to the controls
     public void addActionListener(ActionListener actionListener) {
+        rewindBtn.setActionCommand("rewind");
+        playPauseBtn.setActionCommand("toggle playback");
+        forwardBtn.setActionCommand("forward");
+        volumeBtn.setActionCommand("toggle mute");
+        prevBtn.setActionCommand("previous");
+        nextBtn.setActionCommand("next");
+        shuffleBtn.setActionCommand("shuffle");
+        repeatBtn.setActionCommand("repeat");
+
         rewindBtn.addActionListener(actionListener);
         playPauseBtn.addActionListener(actionListener);
         forwardBtn.addActionListener(actionListener);
         volumeBtn.addActionListener(actionListener);
+        prevBtn.addActionListener(actionListener);
+        nextBtn.addActionListener(actionListener);
+        shuffleBtn.addActionListener(actionListener);
+        repeatBtn.addActionListener(actionListener);
     }
 
     // toggles the play buttons icon

@@ -6,7 +6,6 @@ import javax.swing.RowFilter;
 import javax.swing.UIManager;
 
 import controller.ButtonListener;
-import controller.ClosingListener;
 import controller.PlaybackTimer;
 import controller.ResizeListener;
 import model.Model;
@@ -31,7 +30,6 @@ public class View {
 
     private ResizeListener resizeListener;
     private ButtonListener buttonListener;
-    private ClosingListener closingListener;
     /**
      * constructor for the view class
      * @param model
@@ -47,7 +45,6 @@ public class View {
         
         resizeListener = new ResizeListener(this);
         buttonListener = new ButtonListener(model, this);
-        closingListener = new ClosingListener(model);
         
         createFrame();
         registerControllers();
@@ -104,7 +101,6 @@ public class View {
      * register the controllers for the view
      */
     private void registerControllers() {
-        frame.addWindowListener(closingListener);
         frame.addComponentListener(resizeListener);
         playerPanel.getTopBar().getSettingsButton().addActionListener(buttonListener);
         playerPanel.getBottomBar().addActionListener(buttonListener);
@@ -173,6 +169,7 @@ public class View {
         playerPanel.getBottomBar().setAlbum(model.getAlbum());
         playerPanel.getBottomBar().setAlbumArt(new ImageIcon(new ImageIcon(model.getArtworkBytes()).getImage().getScaledInstance(ALBUM_IMG_SIZE, ALBUM_IMG_SIZE, Image.SCALE_SMOOTH)));
         playerPanel.getBottomBar().setTotalTime(model.getLength(), model.getSeconds());
+        playerPanel.getMusicPanel().setRowSelection(model.getIndex());
     }
     public void clearMetadata() {
         if (playerPanel == null) return;

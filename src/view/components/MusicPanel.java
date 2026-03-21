@@ -56,9 +56,12 @@ public class MusicPanel extends JPanel {
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
-
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            sorter.setSortable(i, false);
+        }
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 1));
@@ -97,6 +100,15 @@ public class MusicPanel extends JPanel {
      */
     public int convertRowIndexToModel(int row) {
         return table.convertRowIndexToModel(row);
+    }
+
+    /**
+     * for selecting the current playing song
+     * @param row
+     */
+    public void setRowSelection(int row) {
+        if (row >= table.getRowCount()) return;
+        table.setRowSelectionInterval(row, row);
     }
 
     // getters
