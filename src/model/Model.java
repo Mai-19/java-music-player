@@ -121,6 +121,11 @@ public class Model {
             Tag tag = f.getTag();
             AudioHeader header = f.getAudioHeader();
 
+            if (header.getBitsPerSample() > 16) {
+                System.err.println("Skipping Unsupported 24-bit file: "+p);
+                return;
+            }
+
             String title = "";
             String artist = "";
             String album = "";
@@ -245,6 +250,10 @@ public class Model {
             return;
         if (songs.isEmpty())
             return;
+        if (samplePlayer.getLoopType() == SamplePlayer.LoopType.LOOP_FORWARDS) {
+            setPlaybackTime(0);
+            return;
+        }
         index = (index + 1 + songs.size()) % songs.size();
         play(index);
     }
@@ -254,6 +263,10 @@ public class Model {
             return;
         if (songs.isEmpty())
             return;
+        if (getProgress() > 5) {
+            setPlaybackTime(0);
+            return;
+        }
         index = (index - 1 + songs.size()) % songs.size();
         play(index);
     }
