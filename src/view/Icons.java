@@ -46,7 +46,7 @@ public class Icons {
     }
 
     static {
-        PLACEHOLDER_ALBUM = load("placeholder.png", 70, 70);
+        PLACEHOLDER_ALBUM = load("placeholder.png", View.ALBUM_IMG_SIZE, View.ALBUM_IMG_SIZE);
 
         ADD_DIRECTORY = load("icons/add-directory.png", 25, 25);
         BACK = load("icons/back.png", 25, 25);

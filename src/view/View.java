@@ -23,6 +23,8 @@ import java.awt.DisplayMode;
  * class with all the view components
  */
 public class View {
+    public static final int ALBUM_IMG_SIZE;
+
     private Model model;
     // the screens information, like refresh rate and size
     private DisplayMode screen;
@@ -169,7 +171,7 @@ public class View {
     public void pullMetadata() {
         playerPanel.getBottomBar().setSongTitle(model.getTitle());
         playerPanel.getBottomBar().setAlbum(model.getAlbum());
-        playerPanel.getBottomBar().setAlbumArt(new ImageIcon(new ImageIcon(model.getArtworkBytes()).getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+        playerPanel.getBottomBar().setAlbumArt(new ImageIcon(new ImageIcon(model.getArtworkBytes()).getImage().getScaledInstance(ALBUM_IMG_SIZE, ALBUM_IMG_SIZE, Image.SCALE_SMOOTH)));
         playerPanel.getBottomBar().setTotalTime(model.getLength(), model.getSeconds());
     }
     public void clearMetadata() {
@@ -201,5 +203,10 @@ public class View {
     }
     public void setPlayback(String string) {
         playerPanel.getBottomBar().setPlayback(string);
+    }
+
+    // static
+    static {
+        ALBUM_IMG_SIZE = 80;
     }
 }

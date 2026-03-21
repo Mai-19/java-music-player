@@ -57,7 +57,7 @@ public class BottomBarPanel extends JPanel {
         setLayout(new BorderLayout(10, 0));
         // padding border
         setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
-        setPreferredSize(new Dimension(0, 90));
+        setPreferredSize(new Dimension(0, View.ALBUM_IMG_SIZE+20));
 
         add(buildAlbumArtAndInfo(), BorderLayout.WEST);
         add(buildCenterControls(), BorderLayout.CENTER);
@@ -74,7 +74,7 @@ public class BottomBarPanel extends JPanel {
 
         // placeholder image
         albumArtLabel = new JLabel(Icons.PLACEHOLDER_ALBUM);
-        albumArtLabel.setPreferredSize(new Dimension(70, 70));
+        albumArtLabel.setPreferredSize(new Dimension(View.ALBUM_IMG_SIZE, View.ALBUM_IMG_SIZE));
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
