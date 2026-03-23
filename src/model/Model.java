@@ -397,6 +397,8 @@ public class Model {
     }
 
     public void precacheNext() {
+        if (SampleManager.getSampleNameList().size() > 2)
+            SampleManager.removeSample(SampleManager.getSampleNameList().get(0));
         if (queue.isEmpty())
             return;
         int nextIndex = (index + 1) % queue.size();
