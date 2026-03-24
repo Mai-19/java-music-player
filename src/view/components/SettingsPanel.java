@@ -4,12 +4,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import controller.FileChooserController;
 import model.Model;
 import view.Icons;
 import view.View;
@@ -25,10 +25,11 @@ import java.awt.GridBagLayout;
  */
 public class SettingsPanel extends JPanel {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
     private JPanel directoryListPanel;
     private MusicPlayerButton backBtn, refreshBtn;
+    private FileChooserController fileChooserController;
 
     /**
      * Constructor for the settings panel
@@ -46,6 +47,8 @@ public class SettingsPanel extends JPanel {
         backBtn.setActionCommand("back");
         refreshBtn.setActionCommand("refresh");
         add(buildSettingsBox(), BorderLayout.CENTER);
+
+        fileChooserController = new FileChooserController(model, this);
     }
 
     /**
@@ -181,14 +184,7 @@ public class SettingsPanel extends JPanel {
      * opens the file chooser to allow adding another directory
      */
     public boolean openFileChooser() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = chooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            model.addDirectory(chooser.getSelectedFile().getAbsolutePath());
-            refreshDirectoryList();
-        }
-        return result == JFileChooser.APPROVE_OPTION;
+        return fileChooserController.openFileChooser();
     }
 
     // getters

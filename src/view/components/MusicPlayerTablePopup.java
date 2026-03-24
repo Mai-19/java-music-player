@@ -1,5 +1,6 @@
 package view.components;
 
+import controller.PopupMouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -8,8 +9,6 @@ import javax.swing.border.LineBorder;
 
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import model.Model;
 import model.Song;
@@ -29,22 +28,10 @@ public class MusicPlayerTablePopup extends JPopupMenu {
         setBorder(new LineBorder(View.BACKGROUND, 0, true));
         setLightWeightPopupEnabled(false);
 
-        table.addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e)  { handleClick(e); }
-            @Override public void mouseReleased(MouseEvent e) { handleClick(e); }
-
-            private void handleClick(MouseEvent e) {
-                if (!e.isPopupTrigger()) return;
-                int row = table.rowAtPoint(e.getPoint());
-                if (row >= 0 && !table.isRowSelected(row))
-                    table.setRowSelectionInterval(row, row);
-                buildMenu();
-                show(table, e.getX(), e.getY());
-            }
-        });
+        table.addMouseListener(new PopupMouseListener(table, this));
     }
 
-    private void buildMenu() {
+    public void buildMenu() {
         removeAll();
 
         JMenu addToPlaylist = makeMenu("Add to playlist");

@@ -12,8 +12,8 @@ import view.View;
  * Class for the player panel
  */
 public class PlayerPanel extends JPanel {
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     /**
      * Constructor for the PlayerPanel class

@@ -4,7 +4,7 @@ import net.beadsproject.beads.core.Bead;
 
 public class SongEndListener extends Bead {
     
-    private Model model;
+    private final Model model;
 
     public SongEndListener(Model model) {
         super();

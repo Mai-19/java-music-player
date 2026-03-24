@@ -16,8 +16,8 @@ import view.View;
  */
 public class ButtonListener implements ActionListener {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     /**
      * constructor for the ButtonListener class

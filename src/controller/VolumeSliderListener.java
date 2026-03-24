@@ -12,8 +12,8 @@ import view.components.MusicPlayerSlider;
  */
 public class VolumeSliderListener implements ChangeListener {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     /**
      * Constructor for the VolumeSliderListener class

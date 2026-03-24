@@ -9,7 +9,7 @@ import view.View;
  * repaints borders and components
  */
 public class ResizeListener extends ComponentAdapter{
-    private View view;
+    private final View view;
     /**
      * constructor for the ResizeListener class
      * @param view

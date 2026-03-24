@@ -10,8 +10,8 @@ import view.View;
  * PlaybackTimer class for handling the playback of music.
  */
 public class PlaybackTimer implements ActionListener {
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
     private Timer timer;
 
     /**

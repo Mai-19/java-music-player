@@ -19,7 +19,7 @@ import view.View;
 public class MusicPlayerTabbedPane extends JTabbedPane {
 
     private int hoveredTab = -1;
-    private View view;
+    private final View view;
 
     public MusicPlayerTabbedPane(View view) {
         super(JTabbedPane.LEFT);

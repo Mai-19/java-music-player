@@ -15,7 +15,7 @@ import view.View;
  * class with search bar and settings button
  */
 public class TopBarPanel extends JPanel {
-    private View view;
+    private final View view;
 
     /**
      * constructor for the top bar panel class

@@ -12,7 +12,7 @@ import view.View;
  */
 public class SearchListener implements CaretListener{
 
-    private View view;
+    private final View view;
 
     /**
      * constructor for the SearchListener class

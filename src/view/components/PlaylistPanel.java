@@ -13,14 +13,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import controller.PlaylistMouseListener;
 import model.Model;
 import view.Icons;
 import view.View;
 
 public class PlaylistPanel extends JPanel {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     private CardLayout cardLayout;
     private JPanel listCard;
@@ -135,12 +136,7 @@ public class PlaylistPanel extends JPanel {
         row.add(deleteBtn, BorderLayout.EAST);
 
         // click row to open playlist
-        row.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                openPlaylist(name);
-            }
-        });
+        row.addMouseListener(new PlaylistMouseListener(this, name));
 
         return row;
     }

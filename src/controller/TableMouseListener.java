@@ -12,8 +12,8 @@ import view.View;
  */
 public class TableMouseListener extends MouseAdapter{
 
-    private View view;
-    private Model model;
+    private final View view;
+    private final Model model;
 
     /**
      * Constructor for the TableMouseListener class

@@ -34,7 +34,7 @@ public class View {
     public static Color ACCENT;
     public static Color TEXT;
 
-    private Model model;
+    private final Model model;
     // the screens information, like refresh rate and size
     private DisplayMode screen;
 

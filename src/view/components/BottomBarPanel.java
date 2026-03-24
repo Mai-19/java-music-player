@@ -24,8 +24,8 @@ import java.awt.event.ActionListener;
  */
 public class BottomBarPanel extends JPanel {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     private JLabel albumArtLabel;
     // custom label, scrolls if text is too long
