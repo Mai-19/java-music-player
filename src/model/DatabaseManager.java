@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class DatabaseManager {
 
-    private static final String DB_FOLDER = System.getProperty("user.home") + "/COMP2800-MusicProjectData";
+    private static final String DB_FOLDER = System.getProperty("user.home") + "/JavaMusicPlayer-Data";
     private static final String DB_FILE = DB_FOLDER + "/MusicPlayerDB.sqlite";
     private static final String URL = "jdbc:sqlite:" + DB_FILE;
 
