@@ -16,6 +16,14 @@ import java.awt.RenderingHints;
 
 import view.View;
 
+/**
+ * MusicPlayerTabbedPane is a custom JTabbedPane with tabs on the left side
+ *
+ * it draws tabs vertically centered in the tab area with a rounded selection highlight
+ * and a subtle hover effect - all default Swing tab borders and dividers are suppressed
+ *
+ * the All Songs Playlists and Lyrics tabs are registered here
+ */
 public class MusicPlayerTabbedPane extends JTabbedPane {
 
     private int hoveredTab = -1;

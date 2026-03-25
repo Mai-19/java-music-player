@@ -8,8 +8,11 @@ import view.View;
 import view.components.MusicPlayerSlider;
 
 /**
- * Listener for the playback slider  <br>
- * pauses playback while user drags playback slider
+ * PlaybackSliderListener handles user interaction with the playback progress slider
+ * 
+ * while the user is dragging the slider playback is paused and the position is updated
+ * so the user can hear where they are scrubbing to
+ * when the user releases the slider playback resumes from the new position
  */
 public class PlaybackSliderListener implements ChangeListener {
 
@@ -17,34 +20,40 @@ public class PlaybackSliderListener implements ChangeListener {
     private final View view;
 
     /**
-     * Constructor for the PlaybackSliderListener class
-     * @param model
+     * creates the listener with references to the model and view
+     * 
+     * @param model the application model
+     * @param view  the application view
      */
     public PlaybackSliderListener(Model model, View view) {
         super();
-
         this.view = view;
         this.model = model;
     }
 
+    /**
+     * called whenever the slider value changes either by the user or by the timer
+     * 
+     * checks getValueIsAdjusting to tell the difference between a user drag
+     * and a programmatic update from the playback timer
+     * only responds to user input by checking the adjusting flag
+     * 
+     * @param e the change event from the slider
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
         MusicPlayerSlider slider = (MusicPlayerSlider) e.getSource();
 
-        // if being dragged
         if (slider.getValueIsAdjusting()) {
-            // pause playback, set flag, and set playback time for when the user lets go
+            // user is dragging - pause playback set the flag and seek to the dragged position
             model.pausePlayback();
             model.setUserAdjustingTime(true);
             model.setPlaybackTime(slider.getValue());
-        }
-        else {
-            // continue playback and unset flag
+        } else {
+            // user released the slider - clear the flag and resume playback
             model.setUserAdjustingTime(false);
             model.resumePlayback();
             view.setPlayback("pause");
-            
         }
     }
-    
 }

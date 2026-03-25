@@ -1,4 +1,5 @@
 package view.components;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,12 +12,19 @@ import javax.swing.JToggleButton;
 import view.View;
 
 /**
- * Class for the music player toggle button
+ * MusicPlayerToggleButton is a custom JToggleButton for the shuffle and repeat buttons
+ * 
+ * when the button is selected it draws a filled rounded background
+ * and a border to visually indicate that the mode is active
+ * when hovered without being selected it shows a lighter highlight
  */
 public class MusicPlayerToggleButton extends JToggleButton {
+
     /**
-     * constructor for the MusicPlayerToggleButton class
-     * @param icon
+     * creates the toggle button with an icon
+     * removes all default Swing button decorations
+     * 
+     * @param icon the icon to display on the button
      */
     public MusicPlayerToggleButton(Icon icon) {
         super(icon);
@@ -28,24 +36,35 @@ public class MusicPlayerToggleButton extends JToggleButton {
     }
 
     /**
-     * paints the component
+     * paints the button with different visual states for selected and hover
+     * 
+     * selected: filled rounded background with a border outline
+     * hovered:  lighter filled rounded background only
+     * default:  no background drawn
+     * 
+     * @param g the graphics context
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         if (isSelected()) {
-            g2.setColor(new Color(View.TEXT.getRGB()+0x22000000, true));
+            // filled background at low opacity
+            g2.setColor(new Color(View.TEXT.getRGB() + 0x22000000, true));
             g2.setStroke(new BasicStroke(0f));
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-            g2.setColor(new Color(View.TEXT.getRGB()+0x66000000, true));
+            // border outline to make it look like a pressed state
+            g2.setColor(new Color(View.TEXT.getRGB() + 0x66000000, true));
             g2.setStroke(new BasicStroke(2f));
-            g2.drawRoundRect(2, 2, getWidth()-4, getHeight()-4, 10, 10);
+            g2.drawRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 10, 10);
         } else if (getModel().isRollover()) {
-            g2.setColor(new Color(View.TEXT.getRGB()+0x22000000, true));
+            // subtle hover fill only
+            g2.setColor(new Color(View.TEXT.getRGB() + 0x22000000, true));
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
         }
+
         g2.dispose();
     }
 }

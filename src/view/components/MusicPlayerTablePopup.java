@@ -14,6 +14,13 @@ import model.Model;
 import model.Song;
 import view.View;
 
+/**
+ * MusicPlayerTablePopup is the right-click context menu for the song table
+ *
+ * it dynamically builds its items each time it is shown
+ * offering options to add the selected songs to a playlist
+ * or remove them from the currently open playlist
+ */
 public class MusicPlayerTablePopup extends JPopupMenu {
 
     private final Model model;

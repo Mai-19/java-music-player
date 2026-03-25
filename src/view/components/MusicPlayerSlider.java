@@ -11,15 +11,21 @@ import javax.swing.plaf.basic.BasicSliderUI;
 import view.View;
 
 /**
- * Class for the music player slider
+ * MusicPlayerSlider is a custom JSlider with a minimal flat style
+ * 
+ * it replaces the default OS slider look with a thin rounded track
+ * and a small circular thumb that match the application theme colors
+ * used for both the playback progress bar and the volume slider
  */
 public class MusicPlayerSlider extends JSlider {
+
     /**
-     * creates a new slider for the music player
+     * creates the slider with the given range and initial value
+     * applies the custom UI immediately
      * 
-     * @param min
-     * @param max
-     * @param value
+     * @param min   minimum value
+     * @param max   maximum value
+     * @param value initial value
      */
     public MusicPlayerSlider(int min, int max, int value) {
         super(min, max, value);
@@ -28,21 +34,25 @@ public class MusicPlayerSlider extends JSlider {
     }
 
     /**
-     * Class for the music player slider UI
+     * custom slider UI that paints a flat rounded track and a circular thumb
      */
     private class MusicPlayerSliderUI extends BasicSliderUI {
 
         /**
-         * constructor for the MusicPlayerSliderUI class
+         * creates the UI for the given slider
          * 
-         * @param b
+         * @param b the slider this UI will render
          */
         public MusicPlayerSliderUI(JSlider b) {
             super(b);
         }
 
         /**
-         * paints the slider
+         * paints the track as two rounded rectangles
+         * the full track is drawn in the text color
+         * the filled portion up to the thumb is drawn in the accent color
+         * 
+         * @param g the graphics context
          */
         @Override
         public void paintTrack(Graphics g) {
@@ -51,18 +61,23 @@ public class MusicPlayerSlider extends JSlider {
             Rectangle t = trackRect;
             int trackHeight = 4;
             int y = t.y + t.height / 2 - trackHeight / 2;
-            // background track
+
+            // full background track
             g2.setColor(View.TEXT);
             g2.fillRoundRect(t.x, y, t.width, trackHeight, trackHeight, trackHeight);
-            // filled portion
+
+            // filled portion from the start to the current thumb position
             int fillWidth = thumbRect.x - t.x + thumbRect.width / 2;
             g2.setColor(View.ACCENT);
             g2.fillRoundRect(t.x, y, fillWidth, trackHeight, trackHeight, trackHeight);
+
             g2.dispose();
         }
 
         /**
-         * paint the thumb
+         * paints the thumb as a small filled circle in the accent color
+         * 
+         * @param g the graphics context
          */
         @Override
         public void paintThumb(Graphics g) {
@@ -77,7 +92,8 @@ public class MusicPlayerSlider extends JSlider {
         }
 
         /**
-         * calculate the thumbs size
+         * sets the thumb hit area to a fixed 16x16 square
+         * the visible circle is smaller but the click area is a bit larger for usability
          */
         @Override
         protected void calculateThumbSize() {

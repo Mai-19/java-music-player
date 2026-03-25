@@ -18,6 +18,12 @@ import javax.swing.table.TableCellRenderer;
 
 import view.View;
 
+/**
+ * MusicPlayerTable is a custom JTable styled for the music player
+ *
+ * it disables cell editing grid lines and column reordering
+ * and applies alternating row background colors and themed header rendering
+ */
 public class MusicPlayerTable extends JTable {
 
     public MusicPlayerTable(DefaultTableModel model) {

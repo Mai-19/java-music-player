@@ -20,6 +20,15 @@ import javax.swing.Timer;
 
 import view.View;
 
+/**
+ * LyricsPanel displays the lyrics for the currently playing song
+ *
+ * supports both synced LRC files where each line highlights as the song plays
+ * and unsynced files where all lines are shown at once
+ *
+ * the active line is displayed larger and brighter than the rest
+ * the panel smoothly scrolls to keep the active line centered
+ */
 public class LyricsPanel extends JPanel {
 
     // ordered list of (timestamp ms, line text) pairs built from the TreeMap

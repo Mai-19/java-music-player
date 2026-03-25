@@ -18,6 +18,14 @@ import model.Model;
 import view.Icons;
 import view.View;
 
+/**
+ * PlaylistPanel manages the playlists tab using a CardLayout
+ *
+ * it shows either a list of all playlists or the songs inside a selected playlist
+ * switching between the two views is handled by openPlaylist and showList
+ * the shared MusicPanel is borrowed from the View when a playlist is opened
+ * and returned when the user navigates back to the list
+ */
 public class PlaylistPanel extends JPanel {
 
     private final Model model;

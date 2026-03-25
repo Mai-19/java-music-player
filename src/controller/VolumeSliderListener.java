@@ -8,7 +8,11 @@ import view.View;
 import view.components.MusicPlayerSlider;
 
 /**
- * Class for handling the volume slider
+ * VolumeSliderListener handles user interaction with the volume slider
+ * 
+ * updates the model volume in real time while the slider is being dragged
+ * also updates the volume button icon in the view so it switches to the
+ * muted icon when the slider reaches zero
  */
 public class VolumeSliderListener implements ChangeListener {
 
@@ -16,18 +20,23 @@ public class VolumeSliderListener implements ChangeListener {
     private final View view;
 
     /**
-     * Constructor for the VolumeSliderListener class
-     * @param model
+     * creates the listener with references to the model and view
+     * 
+     * @param model the application model
+     * @param view  the application view
      */
     public VolumeSliderListener(Model model, View view) {
         super();
-
         this.model = model;
         this.view = view;
     }
 
     /**
-     * sets volume on volume bar drag
+     * called whenever the volume slider value changes
+     * only updates volume while the user is actively dragging
+     * to avoid responding to programmatic value changes
+     * 
+     * @param e the change event from the slider
      */
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -38,5 +47,4 @@ public class VolumeSliderListener implements ChangeListener {
             view.setVolume(slider.getValue());
         }
     }
-    
 }

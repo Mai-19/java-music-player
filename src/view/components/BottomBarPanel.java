@@ -155,7 +155,7 @@ public class BottomBarPanel extends JPanel {
         panel.setPreferredSize(new Dimension(160, 60));
 
         volumeBtn = new MusicPlayerButton(Icons.VOLUME);
-        volumeSlider = new MusicPlayerSlider(0, 10, 7);
+        volumeSlider = new MusicPlayerSlider(0, 10, (int)model.getVolume());
         volumeSlider.setPreferredSize(new Dimension(90, 20));
         volumeSlider.setFocusable(false);
 
