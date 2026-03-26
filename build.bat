@@ -4,7 +4,7 @@ set ERRORLEVEL=0
 
 echo Compiling source...
 mkdir bin 2>nul
-javac -cp "lib/*" -sourcepath src -d bin src/app/MusicPlayer.java
+javac -cp "lib/*" -sourcepath src -d bin src/MusicPlayer.java
 if %ERRORLEVEL% neq 0 (
     echo Compilation failed.
     exit /b 1
@@ -34,7 +34,7 @@ xcopy /s /q bin\* fatjar\ >nul
 xcopy /s /q res\* fatjar\ >nul
 
 echo Packaging JAR...
-jar cfe MusicPlayer.jar app.MusicPlayer -C fatjar .
+jar cfe MusicPlayer.jar MusicPlayer -C fatjar .
 
 echo Cleaning up...
 rmdir /s /q fatjar

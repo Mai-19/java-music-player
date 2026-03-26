@@ -2,7 +2,7 @@
 set -e
 
 # Compile
-javac -cp "lib/*" -sourcepath src -d bin src/app/MusicPlayer.java
+javac -cp "lib/*" -sourcepath src -d bin src/MusicPlayer.java
 
 # Extract dependencies into staging dir
 mkdir -p fatjar
@@ -24,7 +24,7 @@ cp -r bin/. fatjar/
 cp -r res/. fatjar/
 
 # Package everything from one source — no duplicate entries
-jar cfe MusicPlayer.jar app.MusicPlayer -C fatjar .
+jar cfe MusicPlayer.jar MusicPlayer -C fatjar .
 
 # Cleanup
 rm -rf fatjar bin
