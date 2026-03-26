@@ -67,8 +67,13 @@ public class ButtonListener implements ActionListener {
 
             // reindex songs in all directories and refresh the table
             case "refresh":
-                model.indexSongs();
-                view.pullSongs();
+                new Thread(() -> {
+                    model.indexSongs();
+                    SwingUtilities.invokeLater(() -> {
+                        view.pullSongs();
+                        view.refreshDirectoryList();
+                    });
+                }).start();
                 break;
 
             // toggle between play and pause

@@ -205,6 +205,7 @@ public class Model {
             // 24-bit files are not supported by the audio engine
             if (header.getBitsPerSample() > 16) {
                 System.err.println("Skipping Unsupported 24-bit file: " + p);
+                db.removeSongByPath(p.toString());
                 return;
             }
 

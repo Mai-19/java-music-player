@@ -3,7 +3,12 @@ package model;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -288,13 +293,14 @@ public class DatabaseManager {
      */
     public List<Song> loadSongs() {
         List<Song> songs = new ArrayList<>();
-        String sql = "SELECT title, artist, album, release_year, seconds, length, path FROM SONGS ORDER BY title COLLATE NOCASE";
+        String sql = "SELECT title, artist, album, release_year, seconds, length, path FROM SONGS ORDER BY artist, album COLLATE NOCASE";
 
         try (Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                songs.add(new Song(
+                if (Path.of(rs.getString("path")).toFile().exists()) {
+                    songs.add(new Song(
                         rs.getString("title"),
                         rs.getString("artist"),
                         rs.getString("album"),
@@ -302,6 +308,7 @@ public class DatabaseManager {
                         rs.getInt("seconds"),
                         rs.getString("length"),
                         rs.getString("path")));
+                } else {removeSongByPath(rs.getString("path"));}
             }
         } catch (SQLException e) {
             System.out.println("Error loading songs: " + e.getMessage());
