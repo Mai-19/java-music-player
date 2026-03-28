@@ -1,6 +1,8 @@
 # MusicPlayer
 A lightweight all-java local music player for FLAC, MP3, and WAV.
 
+To access a demo of the application hosted in a virtual machine press [here](https://mayar.dev/)
+
 > COMP-2800 - Software Development \
 > University of Windsor, School of Computer Science \
 > Professor: Dr. Andreas S. Maniatis \
@@ -12,9 +14,9 @@ A lightweight all-java local music player for FLAC, MP3, and WAV.
 3. [Installation](#installation)
 4. [Database](#database)
 5. [Usage](#usage)
-6. [Screenshots](#screenshots)
-7. [Documentation](#documentation)
-8. [License](#license)
+7. [Screenshots](#screenshots)
+8. [Documentation](#documentation)
+9. [License](#license)
 
 ## Features
 - FLAC, MP3, and WAV playback
