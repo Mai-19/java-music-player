@@ -295,7 +295,6 @@ public class Model {
      * @param row the index in the queue to read metadata from
      */
     private void getMetadata(int row) {
-        metadataChanged = true;
         try {
             AudioFile f = AudioFileIO.read(Path.of(queue.get(row).getPath()).toFile());
             Tag tag = f.getTag();
@@ -327,6 +326,7 @@ public class Model {
             } else {
                 artworkBytes = null;
             }
+            metadataChanged = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
